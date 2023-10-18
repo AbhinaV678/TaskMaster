@@ -1,0 +1,105 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DATA</title>
+    <style>
+        body{
+            background-color: aquamarine;
+        }
+        p{
+            font-size: x-large;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-weight: bold;
+        }
+        h1{
+            font-size: 40px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-weight: bold;
+        }
+        form{
+            width: fit-content;
+            margin:0 auto;
+            display:block;
+        }
+
+        form p{
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+            font-weight: bold;
+            padding-inline: 20px;
+        }
+
+        button{
+            border-radius: 10px;
+        }
+
+        input:checked+p {
+            text-decoration: line-through;
+            text-decoration-color: #A683E3;
+            }
+
+            input[type="checkbox"] {
+            margin: 20px;
+            }
+
+        p {
+        margin: 0;
+        padding: 20px;
+        font-size: 20px;
+        font-weight: 200;
+        color: #00204a;
+        }
+
+        .box {
+        max-width: 400px;
+        margin: 50px auto;
+        background: yellow;
+        border-radius: 5px;
+        box-shadow: 5px 5px 15px -5px rgba(0, 0, 0, 0.3);
+        }
+
+        .item {
+            min-height: 70px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #F1F1F1;
+            }
+
+            #heading {
+                background-color: #86cfe3;
+                text-align: center;
+                }
+    </style>
+</head>
+<body>
+    <div class="box" id="heading">
+        <h1> <%= listTitle %> </h1>
+      </div>
+
+    <div class="box">
+      <% if(newListItems.length!==0){ %>
+
+          <% newListItems.forEach(x => { %>
+
+
+            <form action="/deleteList" method="post">
+            <div class="item">
+                <input type="checkbox" name="deletedList" value="<%= x._id %>" onChange="this.form.submit()">
+                <p><%=  x.name  %></p>
+              </div>
+            </form>
+
+  
+            <% }); %> 
+    
+  <%  } else{%>
+        <p>
+            No custom lists created!
+        </p>
+    <% } %>
+</div>
+    <form action="/" method="get">
+        <button type="submit"><p>HOME</p></button>
+    </form>
+</body>
+</html>
