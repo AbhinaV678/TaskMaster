@@ -13,7 +13,7 @@ TaskMaster is a feature-rich To-Do List web application that allows users to eff
 
 ## Technologies Used
 
-- **Backend**: Node.js, Express.js
+- **Backend**: Node.js, Express.js, Mongoose, Lodash
 - **Frontend**: HTML, CSS, Embedded JavaScript (EJS)
 - **Database**: MongoDB Atlas
 - **Hosting**: Render
