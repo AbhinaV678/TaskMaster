@@ -30,7 +30,7 @@ TaskMaster is a feature-rich To-Do List web application that allows users to eff
 
 ### Custom Lists
 
-- **Create a Custom List**: To create a custom list , go to the website URL and add "/" + "Custom list name" and press ENTER. Eg: https:////taskmaster-abhinav678.onrender.com/MyWork + ENTER . This will create a list named "MyWork".
+- **Create a Custom List**: To create a custom list , go to the website URL and add "/" + "Custom list name" and press ENTER. Eg: https://taskmaster-xyz.com/MyWork + ENTER . This will create a list named "MyWork".
 - **Access Custom Lists**: To access the list of custom lists you have created , visit https://taskmaster-abhinav678.onrender.com/data . You can also delete a particular custom list by simply checking  the checkbox provided beside the list name.
 
 ## Deployment
