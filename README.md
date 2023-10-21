@@ -25,11 +25,12 @@ TaskMaster is a feature-rich To-Do List web application that allows users to eff
 ### Default To-Do List
 
 - **Add Task**: Enter the task description in the input field and click the "+" button.
+- **Update Task**: Edit your task and save it.
 - **Delete Task**: Click the checkbox next to a task to remove it from the list.
 
 ### Custom Lists
 
-- **Create a Custom List**: To create a custom list , go to the website URL and add "/" + "Custom list name" and press ENTER. Eg: https://taskmaster-abhinav678.onrender.com/MyWork + ENTER . This will create a list named "MyWork".
+- **Create a Custom List**: To create a custom list , go to the website URL and add "/" + "Custom list name" and press ENTER. Eg: https:////taskmaster-abhinav678.onrender.com/MyWork + ENTER . This will create a list named "MyWork".
 - **Access Custom Lists**: To access the list of custom lists you have created , visit https://taskmaster-abhinav678.onrender.com/data . You can also delete a particular custom list by simply checking  the checkbox provided beside the list name.
 
 ## Deployment
@@ -42,4 +43,4 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ## Acknowledgments
 
-We extend our appreciation to [Render](https://render.com) for hosting this project. Your feedback and contributions are highly welcome. Enjoy task management with TaskMaster!
+I extend my appreciation to [Render](https://render.com) for hosting this project. Your feedback and contributions are highly welcome. Enjoy task management with TaskMaster!
