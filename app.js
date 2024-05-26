@@ -7,121 +7,129 @@ const mongoose = require("mongoose");
 const app = express();
 const _ = require("lodash");
 
-app.set('view engine', 'ejs');
+app.set("view engine", "ejs");
 
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
-mongoose.connect("mongodb+srv://debmickey4:DoctorDisrespect1993@cluster0.yacgh7z.mongodb.net/toDoListDB");
+mongoose.connect(process.env.ATLAS_KEY);
 
 const itemsSchema = new mongoose.Schema({
-        itemName : {
-          type: String,
-          required : [true,"Please check your data entry, no itemName specified!"]
-        }
+  itemName: {
+    type: String,
+    required: [true, "Please check your data entry, no itemName specified!"],
+  },
 });
 
-const Item = mongoose.model("Item",itemsSchema);
+const Item = mongoose.model("Item", itemsSchema);
 
 const item1 = new Item({
-    itemName : "Welcome to TaskMaster!",
+  itemName: "Welcome to TaskMaster!",
 });
 
 const item2 = new Item({
-  itemName : "Use the ( + ) icon to insert tasks.",
+  itemName: "Use the ( + ) icon to insert tasks.",
 });
 
 const item3 = new Item({
-  itemName : "Use the checkbox beside each task by checking it to delete the particular task.",
+  itemName:
+    "Use the checkbox beside each task by checking it to delete the particular task.",
 });
 
 const item4 = new Item({
-  itemName : "You can also make custom lists by appending the / symbol and then appending your custom name in the website url displayed in the browser and pressing enter. Eg: websiteUrl/myHouseworkList + ENTER",
+  itemName:
+    "You can also make custom lists by appending the / symbol and then appending your custom name in the website url displayed in the browser and pressing enter. Eg: websiteUrl/myHouseworkList + ENTER",
 });
 
 const item5 = new Item({
-  itemName : "If you want to name new lists based on dates then do it like-> websiteUrl/10_Oct_2023 + ENTER",
+  itemName:
+    "If you want to name new lists based on dates then do it like-> websiteUrl/10_Oct_2023 + ENTER",
 });
 
 const item6 = new Item({
-  itemName : "If you want to see the names of lists you have created visit 'websiteUrl/data' , you can delete the lists by checking the checkboxes there.",
+  itemName:
+    "If you want to see the names of lists you have created visit 'websiteUrl/data' , you can delete the lists by checking the checkboxes there.",
 });
 
 const item7 = new Item({
-  itemName : "if you don't see your entry updated after a particular operation , don't worry - just refresh the page.",
+  itemName:
+    "if you don't see your entry updated after a particular operation , don't worry - just refresh the page.",
 });
 
-const defaultItems = [item1,item2,item3,item4,item5,item6,item7];
+const defaultItems = [item1, item2, item3, item4, item5, item6, item7];
 
 const ListSchema = new mongoose.Schema({
-        name : String,
-        items: [itemsSchema]
+  name: String,
+  items: [itemsSchema],
 });
 
-const List = mongoose.model("List",ListSchema);
+const List = mongoose.model("List", ListSchema);
 
-app.get("/", async function(req, res) {
+app.get("/", async function (req, res) {
   var items = await Item.find({});
 
-  if(items.length===0){
+  if (items.length === 0) {
     Item.insertMany(defaultItems);
     items = await Item.find({});
   }
-  res.render("list", {listTitle: "Today", newListItems: items});
-
+  res.render("list", { listTitle: "Today", newListItems: items });
 });
 
-app.get("/:customListName",async function(req,res){
-      const customListName= _.capitalize(req.params.customListName);
+app.get("/:customListName", async function (req, res) {
+  const customListName = _.capitalize(req.params.customListName);
 
-      if(customListName==="Favicon.ico"){
-        return;
-      }
+  if (customListName === "Favicon.ico") {
+    return;
+  }
 
-      if(customListName==="Data"){
-        var lists = await List.find({});
-        return res.render("listData", {listTitle: "CUSTOM LIST INVENTORY", newListItems: lists});
-      }
+  if (customListName === "Data") {
+    var lists = await List.find({});
+    return res.render("listData", {
+      listTitle: "CUSTOM LIST INVENTORY",
+      newListItems: lists,
+    });
+  }
 
-      var confirmList = await List.findOne({ name: customListName }).exec();
-      if(confirmList!==null){
-        res.render("list", {listTitle: confirmList.name, newListItems: confirmList.items});
-        console.log("list already exists.");
-      }else{
-        const list = new List({
-          name: customListName,
-          items: defaultItems
-          });
-        list.save();
-        console.log("new list created.");
-        res.redirect("/"+customListName);
-      }
+  var confirmList = await List.findOne({ name: customListName }).exec();
+  if (confirmList !== null) {
+    res.render("list", {
+      listTitle: confirmList.name,
+      newListItems: confirmList.items,
+    });
+    console.log("list already exists.");
+  } else {
+    const list = new List({
+      name: customListName,
+      items: defaultItems,
+    });
+    list.save();
+    console.log("new list created.");
+    res.redirect("/" + customListName);
+  }
 });
 
 //Create Task
-app.post("/", async function(req, res){
-
+app.post("/", async function (req, res) {
   const name = req.body.newItem;
   const listName = req.body.list;
 
-  if(name.trim()===""){
+  if (name.trim() === "") {
     console.log("Blank Entry!");
-    if(listName==="Today"){
+    if (listName === "Today") {
       return res.redirect("/");
-    }
-    else{
-      return  res.redirect("/" + listName);
+    } else {
+      return res.redirect("/" + listName);
     }
   }
 
   const item = new Item({
-    itemName : name,
+    itemName: name,
   });
 
-  if(listName==="Today"){
+  if (listName === "Today") {
     item.save();
     res.redirect("/");
-  }else{
+  } else {
     var foundList = await List.findOne({ name: listName }).exec();
     console.log(foundList);
     foundList.items.push(item);
@@ -131,32 +139,35 @@ app.post("/", async function(req, res){
 });
 
 //Update Task
-app.post("/update", async function(req, res){
-
+app.post("/update", async function (req, res) {
   const updatedItem = req.body.editedItem;
   const updateItemId = req.body.edit;
   const listName = req.body.listName;
 
-  if(updatedItem.trim()===""){
+  if (updatedItem.trim() === "") {
     console.log("Blank Update Entry!");
-    if(listName==="Today"){
+    if (listName === "Today") {
       return res.redirect("/");
-    }
-    else{
-      return  res.redirect("/" + listName);
+    } else {
+      return res.redirect("/" + listName);
     }
   }
 
-  if(listName==="Today"){
+  if (listName === "Today") {
     try {
-      await Item.findByIdAndUpdate(updateItemId, { $set: { itemName: updatedItem }});
+      await Item.findByIdAndUpdate(updateItemId, {
+        $set: { itemName: updatedItem },
+      });
     } catch (error) {
       console.log(error);
     }
     return res.redirect("/");
-  }else{
+  } else {
     try {
-      await List.findOneAndUpdate({name: listName, "items._id" : updateItemId}, {$set: {"items.$.itemName": updatedItem}});
+      await List.findOneAndUpdate(
+        { name: listName, "items._id": updateItemId },
+        { $set: { "items.$.itemName": updatedItem } }
+      );
     } catch (error) {
       console.log(error);
     }
@@ -165,20 +176,23 @@ app.post("/update", async function(req, res){
 });
 
 //delete Task
-app.post("/delete", async function(req, res){
- const deleteItemId = req.body.deletedItem;
- const listName = req.body.listName;
-  if(listName==="Today"){
+app.post("/delete", async function (req, res) {
+  const deleteItemId = req.body.deletedItem;
+  const listName = req.body.listName;
+  if (listName === "Today") {
     try {
       await Item.findByIdAndDelete(deleteItemId);
     } catch (error) {
       console.log(error);
     }
     res.redirect("/");
-  }else{
+  } else {
     try {
-      var foundList = await List.findOneAndUpdate({name: listName},{$pull:{items:{_id: deleteItemId}}});
-      if(foundList){
+      var foundList = await List.findOneAndUpdate(
+        { name: listName },
+        { $pull: { items: { _id: deleteItemId } } }
+      );
+      if (foundList) {
         foundList.save();
       }
     } catch (error) {
@@ -189,7 +203,7 @@ app.post("/delete", async function(req, res){
 });
 
 //delete List
-app.post("/deleteList", async function(req, res){
+app.post("/deleteList", async function (req, res) {
   const deleteItemId = req.body.deletedList;
   const listName = "Data";
 
@@ -199,19 +213,16 @@ app.post("/deleteList", async function(req, res){
     console.log(error);
   }
   res.redirect("/" + listName);
- });
+});
 
 let port = process.env.PORT;
-if(port==null || port == ""){
+if (port == null || port == "") {
   port = 3000;
 }
 
-app.listen(port, function() {
+app.listen(port, function () {
   console.log("Server started successfully.");
 });
-
-
- 
 
 /*
 if this type of error  hits :
